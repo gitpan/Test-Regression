@@ -1,0 +1,23 @@
+--- #YAML:1.0
+name:               Test-Regression
+version:            0.01
+abstract:           Test library that can be run in two modes: once to generate outputs and secondly to compare against them
+author:
+    - Nicholas Bamber <nicholas@periapt.co.uk>
+license:            perl
+distribution_type:  module
+configure_requires:
+    ExtUtils::MakeMaker:  0
+build_requires:
+    ExtUtils::MakeMaker:  0
+requires:
+    Test::Differences:  0
+    Test::More:         0
+no_index:
+    directory:
+        - t
+        - inc
+generated_by:       ExtUtils::MakeMaker version 6.54
+meta-spec:
+    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
+    version:  1.4
