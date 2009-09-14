@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Test-Regression
-version:            0.01
+version:            0.02
 abstract:           Test library that can be run in two modes: once to generate outputs and secondly to compare against them
 author:
     - Nicholas Bamber <nicholas@periapt.co.uk>
