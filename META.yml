@@ -1,25 +1,33 @@
---- #YAML:1.0
-name:               Test-Regression
-version:            0.04
-abstract:           Test library that can be run in two modes; one to generate outputs and a second to compare against them
+---
+name: Test-Regression
+version: 0.05
 author:
-    - Nicholas Bamber <nicholas@periapt.co.uk>
-license:            perl
-distribution_type:  module
-configure_requires:
-    ExtUtils::MakeMaker:  0
+  - 'Nicholas Bamber <nicholas@periapt.co.uk>'
+abstract: Test library that can be run in two modes; one to generate outputs and a second to compare against them
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+  repository: http://github.com/periapt/test-regression/tree
 build_requires:
-    ExtUtils::MakeMaker:  0
+  DirHandle: 0
+  File::Spec: 0
+  Test::MockObject: 0
 requires:
-    Algorithm::Diff:    0
-    Test::Differences:  0
-    Test::More:         0
-    Text::Diff:         0
-no_index:
-    directory:
-        - t
-        - inc
-generated_by:       ExtUtils::MakeMaker version 6.54
+  Algorithm::Diff: 0
+  FileHandle: 0
+  Test::Differences: 0
+  Test::More: 0
+  Text::Diff: 0
+configure_requires:
+  Module::Build: 0.35
+provides:
+  Test::Regression:
+    file: lib/Test/Regression.pm
+    version: 0.05
+generated_by: Module::Build version 0.35
 meta-spec:
-    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
-    version:  1.4
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+keywords:
+  - Test
+  - Regression
