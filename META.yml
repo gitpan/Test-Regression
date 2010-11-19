@@ -1,33 +1,33 @@
 ---
-name: Test-Regression
-version: 0.05
+abstract: 'Test library that can be run in two modes; one to generate outputs and a second to compare against them'
 author:
   - 'Nicholas Bamber <nicholas@periapt.co.uk>'
-abstract: Test library that can be run in two modes; one to generate outputs and a second to compare against them
-license: perl
-resources:
-  license: http://dev.perl.org/licenses/
-  repository: http://github.com/periapt/test-regression/tree
 build_requires:
   DirHandle: 0
   File::Spec: 0
   Test::MockObject: 0
+configure_requires:
+  Module::Build: 0.36
+generated_by: 'Module::Build version 0.3607'
+keywords:
+  - Test
+  - Regression
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: Test-Regression
+provides:
+  Test::Regression:
+    file: lib/Test/Regression.pm
+    version: 0.06
 requires:
   Algorithm::Diff: 0
   FileHandle: 0
   Test::Differences: 0
   Test::More: 0
   Text::Diff: 0
-configure_requires:
-  Module::Build: 0.35
-provides:
-  Test::Regression:
-    file: lib/Test/Regression.pm
-    version: 0.05
-generated_by: Module::Build version 0.35
-meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
-keywords:
-  - Test
-  - Regression
+resources:
+  license: http://dev.perl.org/licenses/
+  repository: http://github.com/periapt/test-regression/tree
+version: 0.06

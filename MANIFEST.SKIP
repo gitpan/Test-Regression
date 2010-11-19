@@ -1,0 +1,8 @@
+^MYMETA.yml$
+^.git
+^_build
+tar\.gz$
+^blib
+^Build$
+\.bak$
+^t\/output\/

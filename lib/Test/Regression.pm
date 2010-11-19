@@ -3,6 +3,7 @@ package Test::Regression;
 use warnings;
 use strict;
 use FileHandle;
+use utf8;
 
 =head1 NAME
 
@@ -10,23 +11,26 @@ Test::Regression - Test library that can be run in two modes; one to generate ou
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =cut
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 =head1 SYNOPSIS
 
   use Test::Regression;
+
   ok_regression(sub {return "hello world"}, "t/out/hello_world.txt");
 
 =head1 DESCRIPTION
 
-Using the various Test:: modules you can compare the output of a function against what you expect.
-However if the output is complex and changes from version to version, maintenance of the expected
-output could be costly. This module allows one to use the test code to generate the expected output,
-so that if the differences with model output are expected, one can easily refresh the model output.
+Using the various Test:: modules you can compare the output of a function
+against what you expect. However if the output is complex and changes from
+version to version, maintenance of the expected output could be costly. This
+module allows one to use the test code to generate the expected output,
+so that if the differences with model output are expected, one can easily
+refresh the model output.
 
 =head1 EXPORT
 
@@ -44,53 +48,58 @@ my $CLASS = __PACKAGE__;
 
 =head2 ok_regression
 
-This function requires two arguments: a CODE ref and a file path. 
-The CODE ref is expected to return a SCALAR string which 
-can be compared against previous runs.
-If the TEST_REGRESSION_GEN is set to a true value, then the CODE ref is run and the 
-output written to the file. Otherwise the output of the
+This function requires two arguments: a CODE ref and a file path. The CODE ref
+is expected to return a SCALAR string which can be compared against previous
+runs. If the TEST_REGRESSION_GEN is set to a true value, then the CODE ref is
+run and the output written to the file. Otherwise the output of the
 file is compared against the contents of the file.
 There is a third optional argument which is the test name.
 
 =cut
 
 sub ok_regression {
-	my $code_ref = shift;
-	my $file = shift;
-	my $test_name = shift;
-	my $output = eval {&$code_ref();};
-	my $tb = $CLASS->builder;
-	if ($@) {
-		$tb->diag($@);
-		return $tb->ok(0, $test_name);
-	}
+    my $code_ref  = shift;
+    my $file      = shift;
+    my $test_name = shift;
+    my $output    = eval { &$code_ref(); };
+    my $tb        = $CLASS->builder;
+    if ($@) {
+        $tb->diag($@);
+        return $tb->ok( 0, $test_name );
+    }
 
-	# generate the output files if required
-	if ($ENV{TEST_REGRESSION_GEN}) {
-		my $fh = FileHandle->new;
-		$fh->open(">$file") ||  return $tb->ok(0, "$test_name: cannot open $file");
-		if (length $output) {
-			$fh->print($output) || return $tb->ok(0, "actual write failed: $file");
-		}
-		return $tb->ok(1, $test_name);
-	}
+    # generate the output files if required
+    if ( $ENV{TEST_REGRESSION_GEN} ) {
+        my $fh = FileHandle->new;
+        $fh->open(">$file")
+          || return $tb->ok( 0, "$test_name: cannot open $file" );
+        $fh->binmode;
+        if ( length $output ) {
+            $fh->print($output)
+              || return $tb->ok( 0, "actual write failed: $file" );
+        }
+        return $tb->ok( 1, $test_name );
+    }
 
-	# compare the files
-	return $tb->ok(0, "$test_name: cannot read $file") unless -r $file;
-	my $fh = FileHandle->new;
-	$fh->open("<$file") ||  return $tb->ok(0, "$test_name: cannot open $file");
-	my $content = join '', (<$fh>);
-	eq_or_diff($output, $content, $test_name);
-	return $output eq $file;
+    # compare the files
+    return $tb->ok( 0, "$test_name: cannot read $file" ) unless -r $file;
+    my $fh = FileHandle->new;
+    $fh->open("<$file") || return $tb->ok( 0, "$test_name: cannot open $file" );
+    $fh->binmode;
+    my $content = join '', (<$fh>);
+    eq_or_diff( $output, $content, $test_name );
+    return $output eq $file;
 }
 
 =head1 ENVIRONMENT VARIABLES
 
 =head2 TEST_REGRESSION_GEN
 
-If the TEST_REGRESSION_GEN environment file is unset or false in a perl sense, then the named output files must exist and be readable and the
-test will run normally comparing the outputs of the CODE refs against the contents of those files. If the environment variable is true in 
-a perl sense, then model output files will be overwritten with the output of the CODE ref.
+If the TEST_REGRESSION_GEN environment file is unset or false in a perl sense,
+then the named output files must exist and be readable and the test will run
+normally comparing the outputs of the CODE refs against the contents of those
+files. If the environment variable is true in a perl sense, then model output
+files will be overwritten with the output of the CODE ref.
 
 =head1 AUTHOR
 
@@ -104,9 +113,10 @@ automatically be notified of progress on your bug as I make changes.
 
 =head2 testing of STDERR
 
-The testing of stderr from this module is not as thorough as I would like. L<Test::Builder::Tester> allows turning
-off of stderr checking but not matching by regular expression. Handcrafted efforts currently fall foul of L<Test::Harness>.
-Still it is I believe adequately tested in terms of coverage.
+The testing of stderr from this module is not as thorough as I would like.
+L<Test::Builder::Tester> allows turning off of stderr checking but not matching
+by regular expression. Handcrafted efforts currently fall foul of
+L<Test::Harness>. Still it is I believe adequately tested in terms of coverage.
 
 =head1 SUPPORT
 
@@ -144,13 +154,16 @@ L<http://search.cpan.org/dist/Test-Regression/>
 
 =item Some documentation improvements have been suggested by toolic (http://perlmonks.org/?node_id=622051).
 
-=item Thanks to Filip GraliE<0x144>ski for pointing out I need to test against output of zero length and providing a patch.
+=item Thanks to Filip Graliński for pointing out I need to test against output of zero length and providing a patch.
+
+=item Thanks to Christian Walde for pestering me about newline Windows
+compatibility issues and for providing a patch.
 
 =back 
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009 Nicholas Bamber.
+Copyright 2009-10 Nicholas Bamber.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
@@ -161,4 +174,4 @@ See http://dev.perl.org/licenses/ for more information.
 
 =cut
 
-1; # End of Test::Regression
+1;    # End of Test::Regression
